@@ -17,6 +17,7 @@
             "email": "48760619+xBlixon@users.noreply.github.com"
         }
     ],
+    "minimum-stability": "dev",
     "require": {
         "php": "^8.2",
         "composer-plugin-api": "*"
