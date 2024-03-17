@@ -1,4 +1,4 @@
 <?php
 return [
-    'install-dependencies' => __DIR__."/tests/dummy-dependencies.php"
+    'dependency-list' => __DIR__."/tests/dummy-dependencies.php"
 ];

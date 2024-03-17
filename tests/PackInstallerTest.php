@@ -33,7 +33,7 @@ class PackInstallerTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->dependencies = (require(__DIR__."/../config.php"))['install-dependencies'];
+        $this->dependencies = (require(__DIR__."/../config.php"))['dependency-list'];
         $this->installer = new PackInstaller(
             $this->getMockIO(),
             $this->getComposer()

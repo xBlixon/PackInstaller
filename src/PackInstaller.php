@@ -14,7 +14,7 @@ class PackInstaller extends LibraryInstaller
     {
         $dir = $this->findDirWithVendor();
         $config = "$dir/config.php";
-        $this->dependenciesFilePath = (require($config))['install-dependencies'];
+        $this->dependenciesFilePath = (require($config))['dependency-list'];
     }
 
     public function install(InstalledRepositoryInterface $repo, PackageInterface $package)
