@@ -8,26 +8,25 @@ use Composer\Repository\InstalledRepositoryInterface;
 
 class PackInstaller extends LibraryInstaller
 {
-    private static string $dependenciesFilePath;
+    private string $dependenciesFilePath;
 
-    public static function getDependenciesFilePath(): string
+    private function setDependenciesFilePath(): void
     {
-        return self::$dependenciesFilePath;
-    }
-
-    public static function setDependenciesFilePath(string $dependenciesFilePath): void
-    {
-        self::$dependenciesFilePath = $dependenciesFilePath;
+        $dir = $this->findDirWithVendor();
+        $config = "$dir/config.php";
+        $this->dependenciesFilePath = (require($config))['install-dependencies'];
     }
 
     public function install(InstalledRepositoryInterface $repo, PackageInterface $package)
     {
+        $this->setDependenciesFilePath();
         $this->insertRequire($package);
         return parent::install($repo, $package);
     }
 
     public function uninstall(InstalledRepositoryInterface $repo, PackageInterface $package)
     {
+        $this->setDependenciesFilePath();
         $this->removeRequire($package);
         return parent::uninstall($repo, $package);
     }
@@ -49,20 +48,29 @@ class PackInstaller extends LibraryInstaller
 
     private function insertRequire(PackageInterface $package): void
     {
-        $path = $this->getInstallPath($package)."/velsym-dependencies/dependencies.php";
-        $dependenciesFileArray = file(self::$dependenciesFilePath);
+        $path = $this->getInstallPath($package) . "/velsym-dependencies/dependencies.php";
+        $dependenciesFileArray = file($this->dependenciesFilePath);
         $lastKey = array_key_last($dependenciesFileArray) ?? -1;
         $dependenciesFileArray[$lastKey] = "    require('$path'),\n";
-        $dependenciesFileArray[$lastKey+1] = "];";
-        file_put_contents(self::$dependenciesFilePath, $dependenciesFileArray);
+        $dependenciesFileArray[$lastKey + 1] = "];";
+        file_put_contents($this->dependenciesFilePath, $dependenciesFileArray);
     }
 
     private function removeRequire(PackageInterface $package): void
     {
-        $packagePathPartial = $package->getName()."/velsym-dependencies/dependencies.php";
-        $dependenciesFileArray = file(self::$dependenciesFilePath);
+        $packagePathPartial = $package->getName() . "/velsym-dependencies/dependencies.php";
+        $dependenciesFileArray = file($this->dependenciesFilePath);
         $key = $this->substringFirstOccurrenceKey($dependenciesFileArray, $packagePathPartial);
         unset($dependenciesFileArray[$key]);
-        file_put_contents(self::$dependenciesFilePath, $dependenciesFileArray);
+        file_put_contents($this->dependenciesFilePath, $dependenciesFileArray);
     }
+
+    private function findDirWithVendor($dir = __DIR__): string
+    {
+        while (!file_exists($dir . "/vendor")) {
+            $dir = realpath("$dir/../");
+        }
+        return $dir;
+    }
+
 }

@@ -33,7 +33,7 @@ class PackInstallerTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->dependencies = __DIR__."/dummy-dependencies.php";
+        $this->dependencies = (require(__DIR__."/../config.php"))['install-dependencies'];
         $this->installer = new PackInstaller(
             $this->getMockIO(),
             $this->getComposer()
@@ -68,7 +68,6 @@ class PackInstallerTest extends TestCase
         $package = new Package("foobar", "1.0.0.0", "1.0.0");
         $package->setType("velsym-pack");
         $repository = $this->createMock(InstalledRepositoryInterface::class);
-        $this->installer::setDependenciesFilePath($this->dependencies);
         $this->installer->install($repository, $package);
         $this->assertTrue(in_array($this->getPackageRequire($package), $this->openDependencies()));
     }
@@ -90,7 +89,6 @@ class PackInstallerTest extends TestCase
         $repository->method('removePackage')->with($package);
         $this->insertRequire($package);
 
-        $this->installer::setDependenciesFilePath($this->dependencies);
         $this->installer->uninstall($repository, $package);
 
         $this->assertStringEqualsFile($this->dependencies, $this->startingFile);
