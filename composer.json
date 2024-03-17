@@ -9,7 +9,7 @@
         }
     },
     "extra": {
-        "class": "Velsym\\Composer\\PackInstaller"
+        "class": "Velsym\\Composer\\PackInstallerPlugin"
     },
     "authors": [
         {
@@ -17,11 +17,13 @@
             "email": "48760619+xBlixon@users.noreply.github.com"
         }
     ],
+    "minimum-stability": "dev",
     "require": {
         "php": "^8.2",
-        "composer-plugin-api": "^2.6"
+        "composer-plugin-api": "*"
     },
     "require-dev": {
-        "composer/composer": "^2.7"
+        "composer/composer": "^2.7",
+        "phpunit/phpunit": "^11.1@dev"
     }
 }
