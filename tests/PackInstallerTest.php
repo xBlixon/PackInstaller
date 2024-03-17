@@ -102,12 +102,14 @@ class PackInstallerTest extends TestCase
     private function getPackageRequire(PackageInterface $package): string
     {
         $dependencyPath = $this->installer->getInstallPath($package) . "/velsym-dependencies/dependencies.php";
+        $dependencyPath = str_replace(["\\", "\\\\"], "/", $dependencyPath);
         return "    require('$dependencyPath'),\n";
     }
 
     private function insertRequire(PackageInterface $package): void
     {
         $path = $this->installer->getInstallPath($package)."/velsym-dependencies/dependencies.php";
+        $path = str_replace(["\\", "\\\\"], "/", $path);
         $dependenciesFileArray = file($this->dependencies);
         $lastKey = array_key_last($dependenciesFileArray) ?? -1;
         $dependenciesFileArray[$lastKey] = "    require('$path'),\n";

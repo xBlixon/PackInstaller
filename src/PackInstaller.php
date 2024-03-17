@@ -49,6 +49,7 @@ class PackInstaller extends LibraryInstaller
     private function insertRequire(PackageInterface $package): void
     {
         $path = $this->getInstallPath($package) . "/velsym-dependencies/dependencies.php";
+        $path = str_replace(["\\", "\\\\"], "/", $path);
         $dependenciesFileArray = file($this->dependenciesFilePath);
         $lastKey = array_key_last($dependenciesFileArray) ?? -1;
         $dependenciesFileArray[$lastKey] = "    require('$path'),\n";
